@@ -20,9 +20,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $result = mysqli_query($conn, $query);
 
     // Step 6: If no record found
-    if (mysqli_num_rows($result) == 0) {
-        die("Error: Email does not exist. Please sign up first.");
-    }
+    // if (mysqli_num_rows($result) == 0) {
+    //     die("Error: Email does not exist. Please sign up first.");
+    // }
+if (mysqli_num_rows($result) == 0) {
+    echo "
+        <h2>Email does not exist</h2>
+        <p>Please sign up first or go back to login.</p>
+
+        <a href='login.php'>
+            <button>Back to Login</button>
+        </a>
+    ";
+    exit;
+}
 
     // Step 7: Fetch user data
     $user = mysqli_fetch_assoc($result);
