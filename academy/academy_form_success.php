@@ -111,6 +111,7 @@ $admission = mysqli_fetch_assoc($result);
 <br><br>
 
     <a href="academy_form.php">Add New Admission</a>
-
+     <br><br>
+  <a href="../dashboard/dashboard.php"> <button>GO BACK</button></a>
 </body>
 </html>

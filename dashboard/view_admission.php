@@ -112,14 +112,14 @@ if (!$admission) {
         <div class="mt-4 d-flex gap-2">
 
             <?php if (hasPermission('edit')): ?>
-                <a href="edit_admission.php?id=<?= $admission['id'] ?>"
+                <a href="edit_form.php?id=<?= $admission['id'] ?>"
                    class="btn btn-warning">
                     Edit
                 </a>
             <?php endif; ?>
 
             <?php if (hasPermission('delete')): ?>
-                <a href="delete_admission.php?id=<?= $admission['id'] ?>"
+                <a href="delete_form.php?id=<?= $admission['id'] ?>"
                    class="btn btn-danger"
                    onclick="return confirm('Are you sure you want to delete this admission?');">
                     Delete

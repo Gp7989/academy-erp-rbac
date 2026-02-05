@@ -18,7 +18,7 @@ if (!hasPermission('view')) {
 /* ---------- FETCH USER FORMS ---------- */
 $stmt = $conn->prepare("
     SELECT id, first_name, last_name, grand_total, created_at
-    FROM academy_forms
+    FROM admissions
     WHERE user_id = ?
     ORDER BY created_at DESC
 ");
@@ -68,20 +68,20 @@ $result = $stmt->get_result();
                 <td>
 
                     <!-- VIEW (always if view permission exists) -->
-                    <a href="academy_form_view.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-info">
+                    <a href="../dashboard/view_admission.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-info">
                         View
                     </a>
 
                     <!-- EDIT -->
                     <?php if (hasPermission('edit')): ?>
-                        <a href="academy_form_edit.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning">
+                        <a href="../dashboard/edit_form.php?id=<?= $row['id'] ?>" class="btn btn-sm btn-warning">
                             Edit
                         </a>
                     <?php endif; ?>
 
                     <!-- DELETE -->
                     <?php if (hasPermission('delete')): ?>
-                        <a href="academy_form_delete.php?id=<?= $row['id'] ?>"
+                        <a href="../dashboard/delete_form.php?id=<?= $row['id'] ?>"
                            class="btn btn-sm btn-danger"
                            onclick="return confirm('Are you sure?')">
                             Delete
