@@ -72,7 +72,7 @@ if (isset($_SESSION['login_success'])) {
         <button class="btn btn-secondary dropdown-toggle"
                 type="button"
                 data-bs-toggle="dropdown">
-            Settings
+            ⚙️
         </button>
         <ul class="dropdown-menu dropdown-menu-end">
             <?php if (isAdmin()): ?>
@@ -87,6 +87,9 @@ if (isset($_SESSION['login_success'])) {
                 <a class="dropdown-item" href="../settings/change_password.php">
                     Change Password
                 </a>
+            </li>
+            <li>
+                <a class="dropdown-item" href="../settings/users_list.php">Users List</a>
             </li>
         </ul>
     </div>
