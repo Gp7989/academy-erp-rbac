@@ -101,15 +101,21 @@ function isAdmin(): bool
 {
     global $conn;
 
-    $userId = currentUserId();
-    if (!$userId) {
+    if (!isset($_SESSION['user_id'])) {
         return false;
     }
 
-    $stmt = $conn->prepare("SELECT owner_id FROM users WHERE id = ? LIMIT 1");
-    $stmt->bind_param("i", $userId);
-    $stmt->execute();
-    $row = $stmt->get_result()->fetch_assoc();
+    $uid = $_SESSION['user_id'];
 
-    return $row && $row['owner_id'] === null;
+    $stmt = $conn->prepare("
+        SELECT u.owner_id, u.id
+        FROM users u
+        WHERE u.id = ?
+    ");
+    $stmt->bind_param("i", $uid);
+    $stmt->execute();
+    $user = $stmt->get_result()->fetch_assoc();
+
+    // Tenant owner = admin
+    return $user && (int)$user['owner_id'] === (int)$user['id'];
 }

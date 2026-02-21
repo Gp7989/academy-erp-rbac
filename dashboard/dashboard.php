@@ -58,11 +58,12 @@ if (isset($_SESSION['login_success'])) {
                         <li><a class="dropdown-item" href="../settings/users_list.php">Users List</a></li>
                     <?php endif; ?>
                     <li><a class="dropdown-item" href="../settings/change_password.php">Change Password</a></li>
+                    <li>  <a href="../logout/logout.php" class="dropdown-item">Logout</a></li>
                 </ul>
             </div>
         </div>
 
-        <a href="../logout/logout.php" class="btn btn-danger mt-3">Logout</a>
+      
         <?php if (hasPermission('create_form')): ?>
             <div style="margin-top:20px;"><a href="../academy/academy_form.php" class="btn btn-primary">Academy form</a></div>
         <?php endif; ?>

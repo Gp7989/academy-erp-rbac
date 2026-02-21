@@ -100,7 +100,21 @@ $permissions = $conn->query("SELECT id, permission_name FROM permissions ORDER B
 <button class="btn btn-sm btn-primary">Change Role</button>
 </form>
 <form method="POST" class="mb-2 d-flex gap-2"><input type="hidden" name="action" value="remove_role"><input type="hidden" name="user_id" value="<?= (int) $user['id'] ?>"><button class="btn btn-sm btn-warning">Remove Role</button></form>
+
+<form method="POST" action="../settings/add_direct_permission.php">
+    <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
+    <select name="permission_id" class="form-select">
+        <?php foreach ($permissions as $perm): ?>
+            <option value="<?= $perm['id'] ?>">
+                <?= htmlspecialchars($perm['permission_name']) ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    <button class="btn btn-success btn-sm mt-1">Add Direct Permission</button>
+</form>
+
 <form method="POST" class="d-flex gap-2"><input type="hidden" name="action" value="remove_permission"><input type="hidden" name="user_id" value="<?= (int) $user['id'] ?>"><select name="permission_id" class="form-select form-select-sm"><?php foreach ($permissions as $permission): ?><option value="<?= $permission['id'] ?>"><?= htmlspecialchars($permission['permission_name']) ?></option><?php endforeach; ?></select><button class="btn btn-sm btn-danger">Remove Direct Permission</button></form>
+    
 </td>
 </tr>
 <?php endwhile; else: ?><tr><td colspan="5" class="text-center">No users found.</td></tr><?php endif; ?>
