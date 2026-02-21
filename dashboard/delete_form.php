@@ -7,28 +7,16 @@ require_once __DIR__ . '/../helpers/permission_helper.php';
 require_once __DIR__ . '/../database/db.php';
 
 requireLogin();
-
-if (!hasPermission('delete')) {
+if (!hasPermission('delete_form')) {
     die("You are not allowed to delete forms.");
 }
 
-$userId = currentUserId();
 $formId = intval($_GET['id'] ?? 0);
+$ownerId = tenantOwnerId() ?? resolveTenantOwnerId(currentUserId());
 
-/* ---------- DELETE LOGIC ---------- */
-if (isAdmin()) {
-    // Admin can delete any form
-    $stmt = $conn->prepare("DELETE FROM admissions WHERE id = ?");
-    $stmt->bind_param("i", $formId);
-} else {
-    // User can delete ONLY own form
-    $stmt = $conn->prepare(
-        "DELETE FROM admissions WHERE id = ? AND user_id = ?"
-    );
-    $stmt->bind_param("ii", $formId, $userId);
-}
-
+$stmt = $conn->prepare("DELETE FROM admissions WHERE id = ? AND owner_id = ?");
+$stmt->bind_param("ii", $formId, $ownerId);
 $stmt->execute();
 
-header("Location: ../academy/my_forms.php");
+header("Location: ../dashboard/dashboard.php");
 exit();
