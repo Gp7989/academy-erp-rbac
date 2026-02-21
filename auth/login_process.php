@@ -1,61 +1,44 @@
-<?php ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);  ?>
 <?php
-// Step 1: Start session
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
-
-// Step 2: Include database connection
 include "../database/db.php";
+require_once "../helpers/permission_helper.php";
 
-// Step 3: Check if the form is submitted using POST method
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    die("Invalid Request.");
+}
 
-    // Step 4: Get form data
-    $email = $_POST["email"];
-    $password = $_POST["password"];
+$email = trim($_POST["email"] ?? '');
+$password = $_POST["password"] ?? '';
 
-    // Step 5: Check if email exists in database
-    $query = "SELECT * FROM users WHERE email='$email'";
-    $result = mysqli_query($conn, $query);
+$stmt = $conn->prepare("SELECT * FROM users WHERE email = ? LIMIT 1");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
 
-    // Step 6: If no record found
-    // if (mysqli_num_rows($result) == 0) {
-    //     die("Error: Email does not exist. Please sign up first.");
-    // }
-if (mysqli_num_rows($result) == 0) {
+if ($result->num_rows === 0) {
     echo "
         <h2>Email does not exist</h2>
         <p>Please sign up first or go back to login.</p>
-
-        <a href='login.php'>
-            <button>Back to Login</button>
-        </a>
+        <a href='login.php'><button>Back to Login</button></a>
     ";
     exit;
 }
 
-    // Step 7: Fetch user data
-    $user = mysqli_fetch_assoc($result);
+$user = $result->fetch_assoc();
 
-    // Step 8: Verify password
-    if (password_verify($password, $user["password"])) {
-       $_SESSION['login_success'] = true;
-
-        // Step 9: Set session variables
-        $_SESSION["user_id"] = $user["id"];
-        $_SESSION["user_name"] = $user["full_name"];
-        $_SESSION["user_email"] = $user["email"];
-        
-        // Step 10: Redirect to dashboard
-        header("Location: ../dashboard/dashboard.php");
-        exit();
-
-    } else {
-        die("Error: Incorrect password.");
-    }
-
-} else {
-    die("Invalid Request.");
+if (!password_verify($password, $user["password"])) {
+    die("Error: Incorrect password.");
 }
-?>
+
+$_SESSION['login_success'] = true;
+$_SESSION["user_id"] = (int) $user["id"];
+$_SESSION["user_name"] = $user["full_name"];
+$_SESSION["user_email"] = $user["email"];
+$_SESSION["tenant_owner_id"] = resolveTenantOwnerId((int) $user['id']);
+
+header("Location: ../dashboard/dashboard.php");
+exit();
