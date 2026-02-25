@@ -90,3 +90,59 @@ Built to demonstrate real-world backend concepts:
 * REST API version
 * Audit logs
 * Activity tracking
+
+---
+
+## Authorization Flow (How Access Control Works Internally)
+
+The system determines access using layered permission resolution:
+
+### 1. Tenant Resolution
+
+Each user belongs to a tenant workspace.
+
+* Owner users have `owner_id = NULL`
+* Other users inherit the tenant from owner
+
+```
+resolveTenantOwnerId(user)
+→ returns owner workspace id
+```
+
+### 2. Permission Collection
+
+Permissions are collected from 3 sources:
+
+1. Owner Override
+   Owner automatically receives all permissions.
+
+2. Role Permissions
+   Permissions assigned through role mapping:
+
+user → role → role_permissions → permissions
+
+3. Direct Permissions
+   Extra permissions assigned directly to user.
+
+### 3. Effective Permission Merge
+
+```
+effective_permissions =
+    role_permissions
+  + direct_permissions
+  (unique values)
+```
+
+### 4. Middleware Validation
+
+Before rendering any module:
+
+```
+if (!hasPermission("create_form")) {
+    block access
+}
+```
+
+### Result
+
+Access is enforced at backend level — UI bypass is impossible.
